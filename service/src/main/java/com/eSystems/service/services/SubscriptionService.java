@@ -6,8 +6,11 @@ import com.eSystems.service.models.SubscriptionResponse;
 import com.eSystems.service.repositories.SubscriptionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -31,5 +34,23 @@ public class SubscriptionService {
         }
     }
 
+    public List<String> getAllSubscriptions() {
+        return subscriptionRepository.getAllSubscriptions();
+    }
+
+    public SubscriptionResponse deleteSubscription(String icaoCode) throws CustomException {
+        try {
+
+            subscriptionRepository.deleteById(icaoCode);
+            SubscriptionResponse subscriptionResponse = new SubscriptionResponse();
+            subscriptionResponse.setSuccessful(true);
+            subscriptionResponse.setIcaoCode(icaoCode);
+            return subscriptionResponse;
+        } catch (EmptyResultDataAccessException e) {
+            e.printStackTrace();
+            throw new CustomException(HttpStatus.BAD_REQUEST,
+                    "Subscription doesn't exists!");
+        }
+    }
 }
 

@@ -9,10 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -31,5 +30,13 @@ public class SubscriptionController {
         return new ResponseEntity<>(subscriptionService.newSubscription(airportInfo), HttpStatus.OK);
     }
 
+    @GetMapping(value="/subscriptions")
+    public ResponseEntity<List<String>> getAllSubscriptions() throws CustomException {
+        return new ResponseEntity(subscriptionService.getAllSubscriptions(), HttpStatus.OK);
+    }
 
+    @DeleteMapping(value="/subscriptions/{icaoCode}")
+    public ResponseEntity<SubscriptionResponse> deleteSubscription(@PathVariable String icaoCode) throws CustomException {
+        return new ResponseEntity(subscriptionService.deleteSubscription(icaoCode), HttpStatus.OK);
+    }
 }
